@@ -1,0 +1,159 @@
+.fp {
+  width: 100%;
+  max-width: 1024px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .fp {
+    padding: 0 15px;
+    grid-template-columns: 1fr;
+  }
+}
+
+.fpItem{
+  flex: 1;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fpImg{
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.fpName{
+  color: #333;
+  font-weight: bold;
+}
+
+.fpCity{
+  font-weight: 300;
+}
+
+.fpPrice{
+  font-weight: 500;
+}
+
+.fpRating>button{
+  background-color: #003580;
+  color: white;
+  border: none;
+  padding: 3px;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.fpRating>span{
+  font-size: 14px;
+}
+
+.fpItem {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 15px;
+}
+
+.fpItem:hover {
+  transform: translateY(-5px);
+}
+
+.fpImg {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.fpName {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #333;
+}
+
+.fpCity,
+.fpPrice,
+.fpContact {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.fpRating a {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #475be8;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.fpRating a:hover {
+  background: #475be8;
+}
+
+.mapModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.mapModalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+}
+
+.closeMapButton {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.mapButton {
+  padding: 8px 16px;
+  background-color: #475be8 !important;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.mapButton:hover {
+  background-color: #3146e9 !important;
+}
+
+

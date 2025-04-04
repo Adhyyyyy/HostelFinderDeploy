@@ -1,0 +1,160 @@
+.listContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 100px);
+  padding: 20px;
+}
+
+.listWrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  gap: 20px;
+}
+
+.listSearch {
+  flex: 1;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  position: sticky;
+  top: 20px;
+  height: max-content;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+}
+
+.lsTitle {
+  font-size: 24px;
+  color: #2a3447;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.lsItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.lsItem > label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.lsItem > input,
+.lsItem > select {
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+}
+
+.lsItem > input:focus,
+.lsItem > select:focus {
+  outline: none;
+  border-color: #475be8;
+}
+
+.lsItem > span {
+  height: 30px;
+  padding: 5px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.lsOptions {
+  padding: 10px;
+}
+
+.lsOptionItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 12px;
+}
+
+.lsOptionInput {
+  width: 50px;
+}
+
+.searchButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #475be8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.searchButton:hover {
+  background-color: #3246d3;
+}
+
+.searchButton:disabled {
+  background-color: #b4b4b4;
+  cursor: not-allowed;
+}
+
+.listResult {
+  flex: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.loading,
+.error,
+.noResults {
+  width: 100%;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.loading {
+  background-color: #e8eaf6;
+  color: #3246d3;
+}
+
+.error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.noResults {
+  background-color: #fff;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .listWrapper {
+    flex-direction: column;
+  }
+
+  .listSearch {
+    position: relative;
+    top: 0;
+  }
+
+  .listResult {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,269 @@
+.reviewBox {
+  width: 100%;
+  max-width: 1024px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.reviewBox h2 {
+  text-align: center;
+  color: #003580;
+  margin-bottom: 1rem;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.reviewForm {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.formGroup {
+  margin-bottom: 0.75rem;
+}
+
+.formGroup.full-width {
+  grid-column: span 4;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #262626;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.formGroup select,
+.formGroup input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  background-color: #f8f9fa;
+}
+
+.formGroup textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 60px;
+  max-height: 120px;
+  background-color: #f8f9fa;
+  transition: all 0.2s;
+}
+
+.formGroup select:focus,
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #475be8;
+  box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.1);
+}
+
+.submitButton {
+  grid-column: span 4;
+  padding: 0.75rem;
+  background-color: #475be8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.submitButton:hover {
+  background-color: #2d44f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 53, 128, 0.2);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Star rating styling */
+.rating-select {
+  padding: 0.25rem;
+  border-radius: 6px;
+  gap: 0.25rem;
+}
+
+.rating-select select {
+  padding: 0.25rem 0.5rem;
+}
+
+/* Loading state */
+.loading {
+  text-align: center;
+  color: #666;
+  padding: 1rem;
+}
+
+/* Keep existing CSS and add these new styles */
+
+.reviewsSection {
+  margin-top: 2rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  position: relative;
+}
+
+.reviewsSection h3 {
+  color: #003580;
+  font-size: 18px;
+  margin-bottom: 1rem;
+}
+
+.reviewsList {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-right: -10px;
+  padding-bottom: 10px;
+}
+
+/* Styling the scrollbar */
+.reviewsList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reviewsList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.reviewsList::-webkit-scrollbar-thumb {
+  background: #475be8;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+.reviewsList::-webkit-scrollbar-thumb:hover {
+  background: #002255;
+}
+
+/* Add a fade effect at the bottom to indicate more content */
+.reviewsList::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(transparent, rgba(255,255,255,0.9));
+  pointer-events: none;
+}
+
+.reviewCard {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  min-height: 85px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.reviewCard:hover {
+  transform: translateY(-2px);
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.reviewerInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewerName {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.entityName {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.rating {
+  color: #f1c40f;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.reviewText {
+  color: #34495e;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0.5rem 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.reviewDate {
+  display: block;
+  color: #95a5a6;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+/* Add smooth scroll behavior */
+.reviewsList {
+  scroll-behavior: smooth;
+}
+
+/* Add animation for new reviews */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reviewCard {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Add a subtle transition when hovering over scrollable content */
+.reviewCard::-webkit-scrollbar {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.reviewCard:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+.noReviews {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+} 
