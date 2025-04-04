@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { api } from "../config/api";
 
 const useFetch = (url) => {
   const [data, setData] = useState([]);
@@ -10,12 +10,14 @@ const useFetch = (url) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(url, { withCredentials: true }); // Include credentials
+        const res = await api.get(url);
         setData(res.data);
+        setError(null);
       } catch (err) {
-        setError(err.response ? err.response.data.message : "Something went wrong");
+        setError(err.response?.data?.message || "An error occurred");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchData();
@@ -24,12 +26,14 @@ const useFetch = (url) => {
   const reFetch = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(url, { withCredentials: true });
+      const res = await api.get(url);
       setData(res.data);
+      setError(null);
     } catch (err) {
-      setError(err.response ? err.response.data.message : "Something went wrong");
+      setError(err.response?.data?.message || "An error occurred");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return { data, loading, error, reFetch };

@@ -15,31 +15,51 @@ import reviewRoute from "./routes/reviews.js";
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 8800;
+
+// CORS configuration
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? process.env.ALLOWED_ORIGINS?.split(',') || []
+  : ['http://localhost:3000', 'http://localhost:3001'];
 
 const connect = async () => {
     try {
-        await mongoose.connect(process.env.MONGO);
-        console.log("connected to mongoDB.");
+        await mongoose.connect(process.env.MONGO, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("Connected to MongoDB.");
     } catch (error) {
-        throw error;
+        console.error("MongoDB connection error:", error);
+        process.exit(1);
     }
 };
 
 mongoose.connection.on("disconnected", () => {
-    console.log("mongoDB disconnected!");
+    console.log("MongoDB disconnected!");
 });
 
 //middlewares
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'], // Allow both client and admin URLs
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
 }));
 
 app.use(cookieParser());
 app.use(express.json());
 
+// API routes
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hostel", hostelRoute);
@@ -49,18 +69,22 @@ app.use("/api/beds", bedRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/reviews", reviewRoute);
 
+// Health check endpoint for Render
+app.get("/", (req, res) => {
+    res.status(200).json({ message: "Hostel Finder API is running" });
+});
 
-
+// Error handling middleware
 app.use((err,req,res,next)=>{
     const errorStatus = err.status || 500;
     const errorMessage = err.message || "Something went wrong!";
     return res.status(errorStatus).json({
-        succes: false,
+        success: false,
         status: errorStatus,
         message: errorMessage,
-        stack: err.stack,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
     });
-})
+});
 
 // Add this after your mongoose.connect()
 mongoose.connection.on('connected', async () => {
@@ -73,8 +97,9 @@ mongoose.connection.on('connected', async () => {
   }
 });
 
-app.listen(8800, () => {
+// Start the server
+app.listen(PORT, () => {
     connect();
-    console.log("Connected to backend!");
+    console.log(`Server is running on port ${PORT}`);
 });
 

@@ -1,60 +1,56 @@
-import axios from "axios";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { api } from "../../config/api";
 import "./login.css";
 
-const Login = () => {
-  const [credentials, setCredentials] = useState({
-    username: undefined,
-    password: undefined,
-  });
+function Login() {
+    const [credentials, setCredentials] = useState({
+        username: "",
+        password: "",
+    });
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-  const { loading, error, dispatch } = useContext(AuthContext);
+    const handleChange = (e) => {
+        setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    };
 
-  const navigate = useNavigate()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await api.post("/auth/login", credentials);
+            localStorage.setItem("token", res.data.token);
+            navigate("/");
+        } catch (err) {
+            setError(err.response?.data?.message || "Login failed");
+        }
+    };
 
-  const handleChange = (e) => {
-    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
-  };
-
-  const handleClick = async (e) => {
-    e.preventDefault();
-    dispatch({ type: "LOGIN_START" });
-    try {
-      const res = await axios.post("/auth/login", credentials);
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-      navigate("/")
-    } catch (err) {
-      dispatch({ type: "LOGIN_FAILURE", payload: err.response.data });
-    }
-  };
-
-
-  return (
-    <div className="login">
-      <div className="lContainer">
-        <input
-          type="text"
-          placeholder="name"
-          id="name"
-          onChange={handleChange}
-          className="lInput"
-        />
-        <input
-          type="password"
-          placeholder="password"
-          id="password"
-          onChange={handleChange}
-          className="lInput"
-        />
-        <button disabled={loading} onClick={handleClick} className="lButton">
-          Login
-        </button>
-        {error && <span>{error.message}</span>}
-      </div>
-    </div>
-  );
-};
+    return (
+        <div className="login">
+            <div className="lContainer">
+                <h1>Login</h1>
+                {error && <div className="error">{error}</div>}
+                <input
+                    type="text"
+                    placeholder="username"
+                    id="username"
+                    onChange={handleChange}
+                    className="lInput"
+                />
+                <input
+                    type="password"
+                    placeholder="password"
+                    id="password"
+                    onChange={handleChange}
+                    className="lInput"
+                />
+                <button onClick={handleSubmit} className="lButton">
+                    Login
+                </button>
+            </div>
+        </div>
+    );
+}
 
 export default Login;
