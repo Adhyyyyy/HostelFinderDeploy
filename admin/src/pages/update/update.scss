@@ -1,0 +1,380 @@
+.update {
+  height: 100%;
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .updateContainer {
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, #4a90e2, #67b26f);
+        border-radius: 3px;
+      }
+    }
+
+    .formInput {
+      margin-bottom: 25px;
+      position: relative;
+      width: 100%;
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #34495e;
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      input, select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+          border-color: #4a90e2;
+          box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+          background-color: white;
+        }
+
+        &::placeholder {
+          color: #95a5a6;
+        }
+      }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 40px;
+        cursor: pointer;
+
+        &:focus {
+          background-color: white;
+        }
+      }
+
+      // Image upload styles
+      .image-upload-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        .image-input {
+          padding: 8px;
+          border: 2px dashed #4a90e2;
+          background-color: #f8f9fa;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: #e8f0fe;
+            border-color: #67b26f;
+          }
+
+          &::-webkit-file-upload-button {
+            background: #4a90e2;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: #357abd;
+            }
+          }
+        }
+
+        .image-preview {
+          width: 100%;
+          height: 200px;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 2px solid #e0e0e0;
+          background-color: #f8f9fa;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+
+        .uploading {
+          text-align: center;
+          color: #4a90e2;
+          font-weight: 500;
+          animation: pulse 1.5s infinite;
+        }
+      }
+
+      // Checkbox container
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        box-sizing: border-box;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          margin-right: 12px;
+          cursor: pointer;
+          border: 2px solid #e0e0e0;
+          border-radius: 4px;
+          appearance: none;
+          -webkit-appearance: none;
+          position: relative;
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+
+          &:checked {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+
+            &:after {
+              content: '✓';
+              position: absolute;
+              color: white;
+              font-size: 14px;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+          }
+        }
+
+        label {
+          margin: 0;
+          flex: 1;
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, #4a90e2, #67b26f);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      box-shadow: 0 2px 10px rgba(74, 144, 226, 0.2);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .update {
+    background-color: #1a1a1a;
+
+    .updateContainer {
+      background-color: #2d2d2d;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+      h1 {
+        color: #ffffff;
+      }
+
+      .formInput {
+        label {
+          color: #e0e0e0;
+        }
+
+        input, select {
+          background-color: #3d3d3d;
+          border-color: #4d4d4d;
+          color: #ffffff;
+
+          &:focus {
+            background-color: #3d3d3d;
+            border-color: #4a90e2;
+          }
+
+          &::placeholder {
+            color: #888;
+          }
+        }
+
+        select {
+          background-color: #3d3d3d;
+          
+          &:focus {
+            background-color: #3d3d3d;
+          }
+        }
+
+        .image-upload-container {
+          .image-input {
+            background-color: #3d3d3d;
+            border-color: #4a90e2;
+
+            &:hover {
+              background-color: #2d2d2d;
+              border-color: #67b26f;
+            }
+
+            &::-webkit-file-upload-button {
+              background: #4a90e2;
+
+              &:hover {
+                background: #357abd;
+              }
+            }
+          }
+
+          .image-preview {
+            background-color: #3d3d3d;
+            border-color: #4d4d4d;
+          }
+        }
+
+        .checkbox-container {
+          background-color: #3d3d3d;
+          border-color: #4d4d4d;
+
+          input[type="checkbox"] {
+            border-color: #4d4d4d;
+          }
+        }
+      }
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px);
+  background-color: #f8f9fa;
+}
+
+.loading-spinner {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  color: #475be8;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px);
+  background-color: #f8f9fa;
+  gap: 20px;
+}
+
+.error-message {
+  padding: 20px;
+  background-color: #fff3f3;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  color: #d32f2f;
+  font-size: 16px;
+}
+
+.error-container button {
+  padding: 10px 20px;
+  background-color: #475be8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #2f44e3;
+  }
+} 

@@ -1,0 +1,176 @@
+.home {
+  display: flex;
+
+  .homeContainer {
+    flex: 6;
+    padding: 20px;
+    background-color: #f8f9fa;
+
+    .welcome-section {
+      text-align: center;
+      padding: 40px 20px;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #475be8 0%, #3246d3 100%);
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(71, 91, 232, 0.2);
+      
+      h1 {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 20px;
+      animation: slideUp 0.6s ease-out;
+
+      .feature-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 20px rgba(71, 91, 232, 0.2);
+        }
+
+        .icon-container {
+          width: 60px;
+          height: 60px;
+          background: #475be8;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px;
+
+          svg {
+            color: white;
+            font-size: 28px;
+          }
+        }
+
+        h3 {
+          color: #2c3e50;
+          font-size: 1.2rem;
+          margin-bottom: 10px;
+        }
+
+        p {
+          color: #666;
+          font-size: 0.9rem;
+          line-height: 1.5;
+        }
+      }
+    }
+
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      margin-top: 20px;
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+
+        h4 {
+          color: #666;
+          font-size: 1rem;
+          margin-bottom: 10px;
+        }
+
+        .stat-value {
+          color: #475be8;
+          font-size: 2rem;
+          font-weight: 600;
+          
+          &.loading {
+            color: #ccc;
+            animation: pulse 1.5s infinite;
+          }
+        }
+
+        &.total-hostels { border-left: 4px solid #475be8; }
+        &.total-rooms { border-left: 4px solid #2ecc71; }
+        &.total-users { border-left: 4px solid #e74c3c; }
+      }
+    }
+  }
+}
+
+// Dark mode support
+.dark {
+  .homeContainer {
+    background-color: #1a1a1a;
+
+    .welcome-section {
+      background: linear-gradient(135deg, #2d3436 0%, #1a1a1a 100%);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card {
+      background: #2d2d2d;
+      
+      h3 { color: #fff; }
+      p { color: #aaa; }
+    }
+
+    .stat-card {
+      background: #2d2d2d;
+      
+      h4 { color: #aaa; }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+} 

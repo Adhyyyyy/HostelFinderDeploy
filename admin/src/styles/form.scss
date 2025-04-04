@@ -1,0 +1,474 @@
+.form {
+  height: 100%;
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .formContainer {
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, #4a90e2, #67b26f);
+        border-radius: 3px;
+      }
+    }
+
+    .formInput {
+      margin-bottom: 25px;
+      position: relative;
+      width: 100%;
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #34495e;
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      input, select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+          border-color: #4a90e2;
+          box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+          background-color: white;
+        }
+
+        &::placeholder {
+          color: #95a5a6;
+        }
+      }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 40px;
+        cursor: pointer;
+
+        &:focus {
+          background-color: white;
+        }
+      }
+
+      // Checkbox container
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        box-sizing: border-box;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          margin-right: 12px;
+          cursor: pointer;
+          border: 2px solid #e0e0e0;
+          border-radius: 4px;
+          appearance: none;
+          -webkit-appearance: none;
+          position: relative;
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+
+          &:checked {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+
+            &:after {
+              content: '✓';
+              position: absolute;
+              color: white;
+              font-size: 14px;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+          }
+        }
+
+        label {
+          margin: 0;
+          color: #34495e;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+
+      // Image upload styles
+      .image-upload-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .image-input {
+          padding: 8px;
+          border: 2px dashed #4a90e2;
+          background-color: #f8f9fa;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border-radius: 8px;
+
+          &:hover {
+            background-color: #e8f0fe;
+            border-color: #67b26f;
+          }
+
+          &::-webkit-file-upload-button {
+            background: #4a90e2;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: #357abd;
+            }
+          }
+        }
+
+        .image-preview {
+          width: 120px;
+          height: 120px;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 2px solid #e0e0e0;
+          background-color: #f8f9fa;
+          margin: 0 auto;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+
+        .uploading {
+          text-align: center;
+          color: #4a90e2;
+          font-weight: 500;
+          animation: pulse 1.5s infinite;
+        }
+      }
+
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        box-sizing: border-box;
+        resize: vertical;
+        min-height: 120px;
+
+        &:focus {
+          outline: none;
+          border-color: #4a90e2;
+          box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+          background-color: white;
+        }
+
+        &::placeholder {
+          color: #95a5a6;
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(to right, #4a90e2, #67b26f);
+      color: white;
+      height: 45px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .form {
+    background-color: #1a1a1a;
+
+    .formContainer {
+      background-color: #2d2d2d;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+      h1 {
+        color: #fff;
+      }
+
+      .formInput {
+        label {
+          color: #e0e0e0;
+        }
+
+        input, select {
+          background-color: #333;
+          border-color: #404040;
+          color: #fff;
+
+          &:focus {
+            background-color: #333;
+            border-color: #4a90e2;
+          }
+
+          &::placeholder {
+            color: #666;
+          }
+        }
+
+        .checkbox-container {
+          background-color: #333;
+          border-color: #404040;
+
+          input[type="checkbox"] {
+            border-color: #404040;
+
+            &:checked {
+              background-color: #4a90e2;
+              border-color: #4a90e2;
+            }
+          }
+
+          label {
+            color: #e0e0e0;
+          }
+        }
+
+        .image-upload-container {
+          .image-input {
+            background-color: #333;
+            border-color: #4a90e2;
+
+            &:hover {
+              background-color: #404040;
+              border-color: #67b26f;
+            }
+          }
+
+          .image-preview {
+            background-color: #333;
+            border-color: #404040;
+          }
+        }
+      }
+
+      button {
+        background: linear-gradient(to right, #357abd, #4a8f3c);
+      }
+    }
+  }
+}
+
+.new {
+  width: 100%;
+  display: flex;
+
+  .newContainer {
+    flex: 6;
+
+    .form {
+      padding: 20px;
+      
+      .formContainer {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+        border-radius: 10px;
+
+        h1 {
+          color: #2c3e50;
+          font-size: 24px;
+          margin-bottom: 25px;
+          text-align: center;
+        }
+
+        form {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 15px;
+          justify-content: space-between;
+
+          .formInput {
+            width: calc(50% - 10px); // Two columns with gap
+            margin-bottom: 15px;
+
+            // Make image upload full width
+            &:first-child {
+              width: 100%;
+              margin-bottom: 20px;
+            }
+
+            // Make textareas full width
+            textarea {
+              width: 100%;
+              min-height: 100px;
+              padding: 8px;
+              border: 1px solid #ddd;
+              border-radius: 5px;
+              resize: vertical;
+            }
+
+            // If it contains a textarea, make the container full width
+            &:has(textarea) {
+              width: 100%;
+            }
+
+            label {
+              display: block;
+              margin-bottom: 5px;
+              font-size: 13px;
+              color: #34495e;
+              font-weight: 500;
+            }
+
+            input, select {
+              width: 100%;
+              padding: 8px;
+              border: 1px solid #ddd;
+              border-radius: 5px;
+              font-size: 13px;
+
+              &:focus {
+                outline: none;
+                border-color: #7451f8;
+              }
+            }
+
+            .checkbox-container {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              margin-top: 20px;
+
+              input[type="checkbox"] {
+                width: auto;
+              }
+            }
+
+            .image-upload-container {
+              .image-input {
+                padding: 8px;
+                border: 1px dashed #7451f8;
+                border-radius: 5px;
+                width: 100%;
+              }
+
+              .image-preview {
+                margin-top: 10px;
+                text-align: center;
+                
+                img {
+                  max-width: 150px;
+                  max-height: 150px;
+                  object-fit: cover;
+                  border-radius: 5px;
+                }
+              }
+            }
+          }
+
+          button {
+            width: auto;
+            padding: 8px 20px;
+            border: none;
+            background-color: #7451f8;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 13px;
+            margin: 20px auto 0;
+            transition: background-color 0.3s;
+
+            &:hover {
+              background-color: #5a3cc7;
+            }
+          }
+        }
+      }
+    }
+  }
+} 

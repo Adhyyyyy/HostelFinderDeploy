@@ -1,0 +1,178 @@
+.new {
+    width: 100%;
+    display: flex;
+  
+    .newContainer {
+      flex: 6;
+  
+      .top,
+      .bottom {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px;
+        display: flex;
+  
+        h1 {
+          color: #333;
+          font-size: 24px;
+          font-weight: 600;
+          margin-bottom: 20px;
+        }
+  
+        .left {
+          flex: 1;
+          text-align: center;
+  
+          img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+        }
+  
+        .right {
+          flex: 1;
+          background: white;
+          padding: 30px;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  
+          form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+  
+            .formInput {
+              width: calc(50% - 10px); // Two columns with gap
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+  
+              label {
+                font-size: 14px;
+                font-weight: 500;
+                color: #555;
+              }
+  
+              input,
+              select {
+                padding: 12px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-size: 14px;
+                background-color: #f8f9fa;
+                transition: all 0.3s ease;
+  
+                &:focus {
+                  outline: none;
+                  border-color: #007bff;
+                  background-color: white;
+                  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+                }
+  
+                &:disabled {
+                  background-color: #e9ecef;
+                  cursor: not-allowed;
+                }
+              }
+  
+              select {
+                cursor: pointer;
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 16px;
+                padding-right: 40px;
+              }
+  
+              // Specific styling for number inputs
+              input[type="number"] {
+                -moz-appearance: textfield;
+                &::-webkit-outer-spin-button,
+                &::-webkit-inner-spin-button {
+                  -webkit-appearance: none;
+                  margin: 0;
+                }
+              }
+            }
+  
+            button {
+              width: 100%;
+              padding: 14px;
+              background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              margin-top: 20px;
+  
+              &:hover {
+                background: linear-gradient(135deg, #0056b3 0%, #004094 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+              }
+  
+              &:active {
+                transform: translateY(0);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Dark mode support
+  @media (prefers-color-scheme: dark) {
+    .new {
+      .newContainer {
+        .top,
+        .bottom {
+          background-color: #1a1a1a;
+          h1 {
+            color: #e0e0e0;
+          }
+        }
+  
+        .right {
+          background-color: #242424;
+  
+          .formInput {
+            label {
+              color: #e0e0e0;
+            }
+  
+            input,
+            select {
+              background-color: #333;
+              border-color: #444;
+              color: #e0e0e0;
+  
+              &:focus {
+                border-color: #0d6efd;
+                background-color: #2b2b2b;
+                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+              }
+  
+              &:disabled {
+                background-color: #383838;
+              }
+            }
+          }
+  
+          button {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            
+            &:hover {
+              background: linear-gradient(135deg, #0a58ca 0%, #084298 100%);
+            }
+          }
+        }
+      }
+    }
+  }

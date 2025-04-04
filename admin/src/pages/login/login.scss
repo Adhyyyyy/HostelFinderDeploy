@@ -1,0 +1,80 @@
+.login {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #475be8 !important;
+  }
+  
+  .lContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+
+    h2 {
+      text-align: center;
+      color: #475be8;
+      margin-bottom: 10px;
+    }
+
+    .lInput{
+      height: 30px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      
+      &:focus {
+        outline: none;
+        border-color: #475be8;
+      }
+    }
+  
+    .lButton {
+      border: none;
+      padding: 10px 20px;
+      background-color: #475be8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+
+      &:disabled {
+        background-color: #475be8;
+        cursor: not-allowed;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: #475be8;
+      }
+    }
+  
+    .goBackButton {
+      border: none;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #e0e0e0;
+      }
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #ffebee;
+      border-radius: 5px;
+    }
+  }
