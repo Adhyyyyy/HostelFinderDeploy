@@ -10,7 +10,7 @@ export const getRoomBeds = async (req, res) => {
     if (!beds.length) {
       return res.status(404).json({
         success: false,
-        message: "No beds found for this room"
+        message: "No beds found for this room room"
       });
     }
 
