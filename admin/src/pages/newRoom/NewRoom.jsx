@@ -2,32 +2,9 @@ import "../../styles/form.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 
-// Add this after your imports to check axios configuration
-axios.interceptors.request.use(request => {
-  console.log('Starting Request:', {
-    url: request.url,
-    method: request.method,
-    data: request.data
-  });
-  return request;
-});
-
-axios.interceptors.response.use(
-  response => {
-    console.log('Response:', response);
-    return response;
-  },
-  error => {
-    console.log('Response Error:', {
-      message: error.message,
-      response: error.response?.data
-    });
-    return Promise.reject(error);
-  }
-);
 
 const NewRoom = () => {
   const [info, setInfo] = useState({

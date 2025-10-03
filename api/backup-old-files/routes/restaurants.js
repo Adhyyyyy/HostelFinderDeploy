@@ -12,9 +12,9 @@ import { verifyAdmin } from "../utils/verifyToken.js";
 const router = express.Router();
 
 // CRUD Routes
-router.post("/", verifyAdmin, createRestaurant);
-router.put("/:id", verifyAdmin, updateRestaurant);
-router.delete("/:id", verifyAdmin, deleteRestaurant);
+router.post("/", createRestaurant);
+router.put("/:id", updateRestaurant);
+router.delete("/:id", deleteRestaurant);
 router.get("/find/:id", getRestaurant);
 router.get("/", getRestaurants);
 

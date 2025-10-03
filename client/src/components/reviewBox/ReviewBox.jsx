@@ -25,8 +25,14 @@ const ReviewBox = () => {
       const endpoint = reviewData.entityType === "Hostel" ? "/hostel" : "/restaurants";
       const response = await axios.get(`http://localhost:8800/api${endpoint}`);
       
-      const data = reviewData.entityType === "Hostel" ? response.data : response.data;
-      setEntities(data);
+      console.log("API Response:", response.data);
+      console.log("Response type:", typeof response.data);
+      console.log("Is array:", Array.isArray(response.data));
+      
+      // Handle both wrapped and raw response formats
+      const data = response.data.data || response.data;
+      console.log("Extracted data:", data, "Is array:", Array.isArray(data));
+      setEntities(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching entities:", error);
       setEntities([]);
@@ -38,7 +44,10 @@ const ReviewBox = () => {
   const fetchReviews = async () => {
     try {
       const response = await axios.get("http://localhost:8800/api/reviews");
-      setReviews(response.data.data || response.data);
+      // Handle both wrapped and raw response formats
+      const reviewsData = response.data.data || response.data;
+      console.log("Reviews data:", reviewsData, "Is array:", Array.isArray(reviewsData));
+      setReviews(Array.isArray(reviewsData) ? reviewsData : []);
     } catch (error) {
       console.error("Error fetching reviews:", error);
       setReviews([]);
@@ -114,11 +123,14 @@ const ReviewBox = () => {
             onChange={(e) => setReviewData({...reviewData, entityId: e.target.value})}
           >
             <option value="">Select {reviewData.entityType}</option>
-            {entities.map(entity => (
-              <option key={entity._id} value={entity._id}>
-                {entity.name}
-              </option>
-            ))}
+            {(() => {
+              console.log("Rendering entities:", entities, "Type:", typeof entities, "Is Array:", Array.isArray(entities));
+              return (Array.isArray(entities) ? entities : []).map(entity => (
+                <option key={entity._id} value={entity._id}>
+                  {entity.name}
+                </option>
+              ));
+            })()}
           </select>
         </div>
 

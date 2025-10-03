@@ -1,11 +1,12 @@
 import "./update.scss";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import axios from "../../axios";
 import { userInputs, hostelInputs, roomInputs } from "../../formSource";
 import "../../styles/form.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
+import axiosNative from "axios"; // Import native axios for Cloudinary uploads
 
 // Map frontend paths to API endpoints and their structures
 const apiConfig = {
@@ -163,7 +164,8 @@ const Update = () => {
             const data = new FormData();
             data.append("file", file);
             data.append("upload_preset", "upload");
-            const uploadRes = await axios.post(
+            // Use native axios for Cloudinary upload to avoid Content-Type conflicts
+            const uploadRes = await axiosNative.post(
               "https://api.cloudinary.com/v1_1/adhy/image/upload",
               data
             );

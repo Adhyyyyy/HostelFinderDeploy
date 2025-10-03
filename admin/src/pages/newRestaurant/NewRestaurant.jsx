@@ -1,13 +1,16 @@
 import "../../styles/form.scss";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { restaurantInputs } from "../../formSource";
-import axios from "axios";
+import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
+import axiosNative from "axios"; // Import native axios for Cloudinary uploads
 
 const NewRestaurant = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [file, setFile] = useState(null);
   const [info, setInfo] = useState({
     deliveryAvailable: false,
@@ -37,6 +40,14 @@ const NewRestaurant = () => {
 
   const handleClick = async (e) => {
     e.preventDefault();
+    
+    // Check if user is logged in
+    if (!user) {
+      alert("Please login first");
+      navigate("/login");
+      return;
+    }
+    
     try {
       // Upload image to Cloudinary
       if (!file) {
@@ -46,7 +57,8 @@ const NewRestaurant = () => {
       const data = new FormData();
       data.append("file", file);
       data.append("upload_preset", "upload");
-      const uploadRes = await axios.post(
+      // Use native axios for Cloudinary upload to avoid Content-Type conflicts
+      const uploadRes = await axiosNative.post(
         "https://api.cloudinary.com/v1_1/adhy/image/upload",
         data
       );
