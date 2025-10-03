@@ -2,7 +2,7 @@ import "./beds.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../axios";
 
 const Beds = () => {
   const [hostels, setHostels] = useState([]);
@@ -43,7 +43,8 @@ const Beds = () => {
     const fetchHostels = async () => {
       try {
         const response = await axios.get("/hostel");
-        setHostels(response.data);
+        const hostelsData = response.data.data || response.data;
+        setHostels(Array.isArray(hostelsData) ? hostelsData : []);
       } catch (error) {
         console.error("Error fetching hostels:", error);
       }
@@ -105,9 +106,18 @@ const Beds = () => {
         setLoadingBookings(true);
         const response = await axios.get("http://localhost:8800/api/bookings");
         
+        console.log("Bookings response:", response.data);
+        
+        // Handle both wrapped and raw response formats
+        let bookingsData;
         if (response.data.success && response.data.data) {
-          setBookings(response.data.data);
+          bookingsData = response.data.data;
+        } else {
+          bookingsData = response.data;
         }
+        
+        // Ensure bookingsData is an array
+        setBookings(Array.isArray(bookingsData) ? bookingsData : []);
       } catch (error) {
         console.error("Error fetching bookings:", error);
       } finally {
@@ -160,9 +170,17 @@ const Beds = () => {
       await axios.put(`http://localhost:8800/api/bookings/${bookingId}/status`, { status });
       // Refresh the bookings list
       const response = await axios.get("http://localhost:8800/api/bookings");
+      
+      // Handle both wrapped and raw response formats
+      let bookingsData;
       if (response.data.success && response.data.data) {
-        setBookings(response.data.data);
+        bookingsData = response.data.data;
+      } else {
+        bookingsData = response.data;
       }
+      
+      // Ensure bookingsData is an array
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
     } catch (error) {
       console.error("Error updating booking status:", error);
       alert("Failed to update booking status");
@@ -277,7 +295,7 @@ const Beds = () => {
                 <div className="loading">Loading bookings...</div>
               ) : (
                 <div className="bookingsContainer">
-                  {bookings.length === 0 ? (
+                  {!Array.isArray(bookings) || bookings.length === 0 ? (
                     <div className="noBookings">No bookings found</div>
                   ) : (
                     bookings.map((booking) => (

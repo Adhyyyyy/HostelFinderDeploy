@@ -1,105 +1,350 @@
-import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
-import authRoute from "./routes/auth.js";
-import usersRoute from "./routes/users.js";
-import hostelRoute from "./routes/hostel.js";
-import roomsRoute from "./routes/rooms.js";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import restaurantsRoute from "./routes/restaurants.js";  
-import bedRoutes from "./routes/beds.js";
-import bookingRoutes from "./routes/bookings.js";
-import reviewRoute from "./routes/reviews.js";
 
+// Load environment variables FIRST before any other imports
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 8800;
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
-// CORS configuration
-const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? process.env.ALLOWED_ORIGINS?.split(',') || []
-  : ['http://localhost:3000', 'http://localhost:3001'];
+// Import OOP components
+import Database from "./core/Database.js";
+import Logger from "./utils/classes/Logger.js";
+import ErrorMiddleware from "./middleware/ErrorMiddleware.js";
+import LoggingMiddleware from "./middleware/LoggingMiddleware.js";
+import ValidationMiddleware from "./middleware/ValidationMiddleware.js";
 
-const connect = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("Connected to MongoDB.");
-    } catch (error) {
-        console.error("MongoDB connection error:", error);
-        process.exit(1);
-    }
-};
-
-mongoose.connection.on("disconnected", () => {
-    console.log("MongoDB disconnected!");
-});
-
-//middlewares
-app.use(cors({
-    origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
+/**
+ * Main Application Class
+ * Manages the Express application with OOP architecture
+ */
+class Application {
+    constructor() {
+        this.app = express();
+        this.port = process.env.PORT || 8800;
+        this.database = Database.getInstance();
+        this.logger = Logger;
+        this.errorMiddleware = new ErrorMiddleware();
+        this.loggingMiddleware = new LoggingMiddleware();
         
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
+        // Initialize application (non-async parts)
+        this.initializeMiddleware();
+        this.setupGracefulShutdown();
+    }
+
+    /**
+     * Initialize middleware
+     */
+    initializeMiddleware() {
+        // CORS configuration
+        const allowedOrigins = process.env.NODE_ENV === 'production' 
+            ? process.env.ALLOWED_ORIGINS?.split(',') || []
+            : ['http://localhost:3000', 'http://localhost:3001'];
+
+        this.app.use(cors({
+            origin: function(origin, callback) {
+                // Allow requests with no origin (like mobile apps or curl requests)
+                if (!origin) return callback(null, true);
+                
+                if (allowedOrigins.indexOf(origin) === -1) {
+                    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+                    return callback(new Error(msg), false);
+                }
+                return callback(null, true);
+            },
+            credentials: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with', 'x-api-key']
+        }));
+
+        // Basic middleware
+        this.app.use(cookieParser());
+        this.app.use(express.json({ limit: '10mb' }));
+        this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+        // Disable caching for API endpoints to prevent 304 issues
+        this.app.use('/api', (req, res, next) => {
+            res.set({
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            });
+            next();
+        });
+
+        // Security middleware
+        this.app.use(ValidationMiddleware.sanitizeStrings());
+
+        // Logging middleware
+        this.app.use(this.loggingMiddleware.requestLogger);
+        this.app.use(this.loggingMiddleware.performanceMonitor);
+        this.app.use(this.loggingMiddleware.securityLogger);
+
+        // Trust proxy for accurate IP addresses
+        this.app.set('trust proxy', 1);
+    }
+
+    /**
+     * Initialize API routes
+     */
+    async initializeRoutes() {
+        // Health check endpoint
+        this.app.get("/", (req, res) => {
+            res.status(200).json({ 
+                success: true,
+                message: "Hostel Finder API is running",
+                version: "2.0.0",
+                architecture: "Object-Oriented",
+                timestamp: new Date().toISOString()
+            });
+        });
+
+        // Health check endpoint for monitoring
+        this.app.get("/health", async (req, res) => {
+            try {
+                const dbHealth = await this.database.healthCheck();
+                const health = {
+                    status: 'healthy',
+                    timestamp: new Date().toISOString(),
+                    uptime: process.uptime(),
+                    memory: process.memoryUsage(),
+                    database: dbHealth
+                };
+
+                res.status(200).json(health);
+            } catch (error) {
+                this.logger.error('Health check failed', { error: error.message });
+                res.status(503).json({
+                    status: 'unhealthy',
+                    timestamp: new Date().toISOString(),
+                    error: error.message
+                });
+            }
+        });
+
+        // API version endpoint
+        this.app.get("/api/version", (req, res) => {
+            res.status(200).json({
+                success: true,
+                version: "2.0.0",
+                architecture: "Object-Oriented",
+                features: [
+                    "Repository Pattern",
+                    "Service Layer",
+                    "Class-based Controllers",
+                    "Comprehensive Validation",
+                    "Advanced Logging",
+                    "Error Handling"
+                ]
+            });
+        });
+
+        // Dynamic import of routes AFTER environment is loaded
+        const { default: authRoutes } = await import("./routes-oop/auth.js");
+        const { default: userRoutes } = await import("./routes-oop/users.js");
+        const { default: hostelRoutes } = await import("./routes-oop/hostels.js");
+        const { default: roomRoutes } = await import("./routes-oop/rooms.js");
+        const { default: bedRoutes } = await import("./routes-oop/beds.js");
+        const { default: bookingRoutes } = await import("./routes-oop/bookings.js");
+        const { default: restaurantRoutes } = await import("./routes-oop/restaurants.js");
+        const { default: reviewRoutes } = await import("./routes-oop/reviews.js");
+
+        // API routes with versioning
+        const apiV1 = '/api/v1';
+        const api = '/api'; // Default to v1 for backward compatibility
+
+        // Authentication routes
+        this.app.use(`${api}/auth`, authRoutes);
+        this.app.use(`${apiV1}/auth`, authRoutes);
+
+        // User routes
+        this.app.use(`${api}/users`, userRoutes);
+        this.app.use(`${apiV1}/users`, userRoutes);
+
+        // Hostel routes
+        this.app.use(`${api}/hostel`, hostelRoutes);
+        this.app.use(`${api}/hostels`, hostelRoutes); // Alternative endpoint
+        this.app.use(`${apiV1}/hostel`, hostelRoutes);
+        this.app.use(`${apiV1}/hostels`, hostelRoutes);
+
+        // Room routes
+        this.app.use(`${api}/rooms`, roomRoutes);
+        this.app.use(`${apiV1}/rooms`, roomRoutes);
+
+        // Bed routes
+        this.app.use(`${api}/beds`, bedRoutes);
+        this.app.use(`${apiV1}/beds`, bedRoutes);
+
+        // Booking routes
+        this.app.use(`${api}/bookings`, bookingRoutes);
+        this.app.use(`${apiV1}/bookings`, bookingRoutes);
+
+        // Restaurant routes
+        this.app.use(`${api}/restaurants`, restaurantRoutes);
+        this.app.use(`${apiV1}/restaurants`, restaurantRoutes);
+
+        // Review routes
+        this.app.use(`${api}/reviews`, reviewRoutes);
+        this.app.use(`${apiV1}/reviews`, reviewRoutes);
+
+        this.logger.info('API routes initialized successfully');
+    }
+
+    /**
+     * Initialize error handling
+     */
+    initializeErrorHandling() {
+        // 404 handler for undefined routes
+        this.app.use(this.errorMiddleware.notFoundHandler);
+
+        // Global error handling middleware chain
+        this.app.use(...this.errorMiddleware.createErrorChain());
+
+        // Setup process error handlers
+        ErrorMiddleware.handleUnhandledRejection();
+        ErrorMiddleware.handleUncaughtException();
+
+        this.logger.info('Error handling initialized successfully');
+    }
+
+    /**
+     * Setup graceful shutdown
+     */
+    setupGracefulShutdown() {
+        const gracefulShutdown = async (signal) => {
+            this.logger.info(`Received ${signal}. Starting graceful shutdown...`);
+
+            // Close server
+            if (this.server) {
+                this.server.close(async () => {
+                    this.logger.info('HTTP server closed');
+
+                    try {
+                        // Close database connection
+                        await this.database.disconnect();
+                        this.logger.info('Database connection closed');
+
+                        // Exit process
+                        process.exit(0);
+                    } catch (error) {
+                        this.logger.error('Error during shutdown', { error: error.message });
+                        process.exit(1);
+                    }
+                });
+            } else {
+                process.exit(0);
+            }
+        };
+
+        // Handle shutdown signals
+        process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+        process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+    }
+
+    /**
+     * Start the application
+     */
+    async start() {
+        try {
+            // Connect to database
+            await this.database.connect();
+            this.logger.info('Database connected successfully');
+
+            // Start server
+            this.server = this.app.listen(this.port, () => {
+                this.logger.info(`Server started successfully`, {
+                    port: this.port,
+                    environment: process.env.NODE_ENV || 'development',
+                    architecture: 'Object-Oriented',
+                    version: '2.0.0'
+                });
+
+                // Log server information
+                console.log(`
+╔══════════════════════════════════════════════════════════════╗
+║                    HOSTEL FINDER API v2.0                   ║
+║                   Object-Oriented Architecture              ║
+╠══════════════════════════════════════════════════════════════╣
+║ Status: Running                                              ║
+║ Port: ${this.port.toString().padEnd(53)}║
+║ Environment: ${(process.env.NODE_ENV || 'development').padEnd(47)}║
+║ Database: Connected                                          ║
+║ Architecture: OOP with Repository Pattern                   ║
+╚══════════════════════════════════════════════════════════════╝
+                `);
+            });
+
+            // Handle server errors
+            this.server.on('error', (error) => {
+                this.logger.error('Server error', { error: error.message });
+                process.exit(1);
+            });
+
+        } catch (error) {
+            this.logger.error('Failed to start application', { error: error.message });
+            process.exit(1);
         }
-        return callback(null, true);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
-}));
+    }
 
-app.use(cookieParser());
-app.use(express.json());
+    /**
+     * Stop the application
+     */
+    async stop() {
+        try {
+            if (this.server) {
+                this.server.close();
+                this.logger.info('Server stopped');
+            }
 
-// API routes
-app.use("/api/auth", authRoute);
-app.use("/api/users", usersRoute);
-app.use("/api/hostel", hostelRoute);
-app.use("/api/rooms", roomsRoute);
-app.use("/api/restaurants", restaurantsRoute);
-app.use("/api/beds", bedRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/reviews", reviewRoute);
+            await this.database.disconnect();
+            this.logger.info('Database disconnected');
 
-// Health check endpoint for Render
-app.get("/", (req, res) => {
-    res.status(200).json({ message: "Hostel Finder API is running" });
-});
+        } catch (error) {
+            this.logger.error('Error stopping application', { error: error.message });
+            throw error;
+        }
+    }
 
-// Error handling middleware
-app.use((err,req,res,next)=>{
-    const errorStatus = err.status || 500;
-    const errorMessage = err.message || "Something went wrong!";
-    return res.status(errorStatus).json({
-        success: false,
-        status: errorStatus,
-        message: errorMessage,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-    });
-});
+    /**
+     * Initialize async components (routes, etc.)
+     */
+    async initialize() {
+        await this.initializeRoutes();
+        this.initializeErrorHandling(); // Initialize error handling AFTER routes
+        this.logger.info('Application initialized successfully');
+    }
 
-// Add this after your mongoose.connect()
-mongoose.connection.on('connected', async () => {
-  try {
-    // Drop existing indexes
-    await mongoose.connection.collections['rooms']?.dropIndexes();
-    console.log('Dropped existing indexes');
-  } catch (err) {
-    console.log('No existing indexes to drop');
-  }
-});
+    /**
+     * Get application instance
+     */
+    getApp() {
+        return this.app;
+    }
 
-// Start the server
-app.listen(PORT, () => {
-    connect();
-    console.log(`Server is running on port ${PORT}`);
-});
+    /**
+     * Get server instance
+     */
+    getServer() {
+        return this.server;
+    }
+}
 
+// Create and start application
+const application = new Application();
+
+// Initialize and start the application
+if (process.env.NODE_ENV !== 'test') {
+    (async () => {
+        try {
+            await application.initialize();
+            await application.start();
+        } catch (error) {
+            console.error('Failed to start application:', error);
+            process.exit(1);
+        }
+    })();
+}
+
+// Export for testing
+export default application;
+export { Application };

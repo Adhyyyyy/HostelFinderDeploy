@@ -1,16 +1,31 @@
 {
-  "name": "hostel-finder-api",
-  "version": "1.0.0",
-  "description": "Backend API for Hostel Finder application",
+  "name": "hostel-finder-api-oop",
+  "version": "2.0.0",
+  "description": "Object-Oriented Backend API for Hostel Finder application",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:old": "node index.js",
+    "dev:old": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "hostel",
+    "finder",
+    "api",
+    "nodejs",
+    "express",
+    "mongodb",
+    "oop",
+    "object-oriented",
+    "repository-pattern",
+    "service-layer"
+  ],
+  "author": "Hostel Finder Team",
   "license": "ISC",
   "dependencies": {
     "abbrev": "^1.1.1",
@@ -180,5 +195,10 @@
     "wrappy": "^1.0.2",
     "yallist": "^4.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }

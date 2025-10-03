@@ -2,7 +2,7 @@ import "./bedManagement.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../axios";
 
 const BedManagement = () => {
   const [hostels, setHostels] = useState([]);
@@ -17,7 +17,8 @@ const BedManagement = () => {
     const fetchHostels = async () => {
       try {
         const response = await axios.get("/hostel");
-        setHostels(response.data);
+        const hostelsData = response.data.data || response.data;
+        setHostels(Array.isArray(hostelsData) ? hostelsData : []);
       } catch (error) {
         console.error("Error fetching hostels:", error);
       }
@@ -52,7 +53,8 @@ const BedManagement = () => {
         try {
           const response = await axios.get(`/rooms/${selectedRoom}`);
           if (response.data) {
-            setBeds(response.data.beds || []);
+            const roomData = response.data.data || response.data;
+            setBeds(roomData.beds || []);
           }
         } catch (error) {
           console.error("Error fetching beds:", error);
@@ -76,7 +78,8 @@ const BedManagement = () => {
       // Refresh beds after update
       const response = await axios.get(`/rooms/${selectedRoom}`);
       if (response.data) {
-        setBeds(response.data.beds || []);
+        const roomData = response.data.data || response.data;
+        setBeds(roomData.beds || []);
       }
     } catch (error) {
       console.error("Error updating bed:", error);

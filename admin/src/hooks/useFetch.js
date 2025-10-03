@@ -11,7 +11,9 @@ const useFetch = (url) => {
       setLoading(true);
       try {
         const res = await axios.get(url);
-        setData(res.data);
+        // Handle both wrapped and raw response formats
+        const responseData = res.data.data !== undefined ? res.data.data : res.data;
+        setData(responseData);
       } catch (err) {
         setError(err.response ? err.response.data.message : "Something went wrong");
       }
@@ -25,7 +27,9 @@ const useFetch = (url) => {
     setLoading(true);
     try {
       const res = await axios.get(url);
-      setData(res.data);
+      // Handle both wrapped and raw response formats
+      const responseData = res.data.data !== undefined ? res.data.data : res.data;
+      setData(responseData);
     } catch (err) {
       setError(err.response ? err.response.data.message : "Something went wrong");
     }

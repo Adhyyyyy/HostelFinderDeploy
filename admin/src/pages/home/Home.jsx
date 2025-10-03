@@ -3,7 +3,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { FaBed, FaHotel, FaUsers, FaUtensils, FaChartLine, FaCog } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../axios";
 
 const Home = () => {
   const [stats, setStats] = useState({
@@ -16,16 +16,19 @@ const Home = () => {
     const fetchStats = async () => {
       try {
         // Fetch hostels count
-        const hostelsResponse = await axios.get("http://localhost:8800/api/hostel");
-        const totalHostels = hostelsResponse.data.length;
+        const hostelsResponse = await axios.get("/hostel");
+        const hostelsData = hostelsResponse.data.data || hostelsResponse.data;
+        const totalHostels = Array.isArray(hostelsData) ? hostelsData.length : 0;
 
         // Fetch rooms and count available ones
-        const roomsResponse = await axios.get("http://localhost:8800/api/rooms");
-        const availableRooms = roomsResponse.data.filter(room => room.isAvailable).length;
+        const roomsResponse = await axios.get("/rooms");
+        const roomsData = roomsResponse.data.data || roomsResponse.data;
+        const availableRooms = Array.isArray(roomsData) ? roomsData.filter(room => room.isAvailable).length : 0;
 
         // Fetch users count
-        const usersResponse = await axios.get("http://localhost:8800/api/users");
-        const activeUsers = usersResponse.data.length;
+        const usersResponse = await axios.get("/users");
+        const usersData = usersResponse.data.data || usersResponse.data;
+        const activeUsers = Array.isArray(usersData) ? usersData.length : 0;
 
         setStats({
           totalHostels,

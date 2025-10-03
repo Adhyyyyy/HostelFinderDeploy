@@ -11,7 +11,9 @@ const useFetch = (url) => {
       setLoading(true);
       try {
         const res = await api.get(url);
-        setData(res.data);
+        // Handle both wrapped and raw response formats
+        const responseData = res.data.data !== undefined ? res.data.data : res.data;
+        setData(responseData);
         setError(null);
       } catch (err) {
         setError(err.response?.data?.message || "An error occurred");
@@ -27,7 +29,9 @@ const useFetch = (url) => {
     setLoading(true);
     try {
       const res = await api.get(url);
-      setData(res.data);
+      // Handle both wrapped and raw response formats
+      const responseData = res.data.data !== undefined ? res.data.data : res.data;
+      setData(responseData);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");

@@ -2,6 +2,7 @@
   "name": "booking",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
@@ -17,7 +18,7 @@
     "react": "^18.0.0",
     "react-date-range": "^1.4.0",
     "react-dom": "^18.0.0",
-    "react-leaflet": "^5.0.0",
+    "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
