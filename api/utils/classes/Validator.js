@@ -163,6 +163,21 @@ class Validator {
     }
 
     /**
+     * Validate boolean value
+     */
+    static validateBoolean(value, fieldName) {
+        if (value === undefined || value === null) {
+            throw ErrorHandler.createValidationError(`${fieldName} is required`, fieldName);
+        }
+
+        if (typeof value !== 'boolean') {
+            throw ErrorHandler.createValidationError(`${fieldName} must be a boolean value`, fieldName);
+        }
+
+        return true;
+    }
+
+    /**
      * Validate array
      */
     static validateArray(value, fieldName, minLength = 0, maxLength = Infinity) {
@@ -353,9 +368,20 @@ class Validator {
                 }
 
                 // Apply validation rules
-                if (rule.required && (value === undefined || value === null || value === '')) {
-                    errors.push(`${field} is required`);
-                    continue;
+                if (rule.required) {
+                    if (rule.type === 'boolean') {
+                        // For boolean fields, only check if they are undefined or null
+                        if (value === undefined || value === null) {
+                            errors.push(`${field} is required`);
+                            continue;
+                        }
+                    } else {
+                        // For other types, also check for empty strings
+                        if (value === undefined || value === null || value === '') {
+                            errors.push(`${field} is required`);
+                            continue;
+                        }
+                    }
                 }
 
                 if (value !== undefined && value !== null && value !== '') {
@@ -369,6 +395,8 @@ class Validator {
                         this.validateStringLength(value, field, rule.minLength, rule.maxLength);
                     } else if (rule.type === 'number') {
                         this.validateNumberRange(value, field, rule.min, rule.max);
+                    } else if (rule.type === 'boolean') {
+                        this.validateBoolean(value, field);
                     } else if (rule.type === 'array') {
                         this.validateArray(value, field, rule.minLength, rule.maxLength);
                     } else if (rule.type === 'enum') {

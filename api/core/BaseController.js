@@ -117,7 +117,9 @@ class BaseController {
      * Validate request parameters
      */
     validateParams(req, requiredParams = []) {
-        const missing = requiredParams.filter(param => !req.params[param]);
+        const missing = requiredParams.filter(param => 
+            req.params[param] === undefined || req.params[param] === null || req.params[param] === ''
+        );
         if (missing.length > 0) {
             throw new Error(`Missing required parameters: ${missing.join(', ')}`);
         }
@@ -127,7 +129,9 @@ class BaseController {
      * Validate request body
      */
     validateBody(req, requiredFields = []) {
-        const missing = requiredFields.filter(field => !req.body[field]);
+        const missing = requiredFields.filter(field => 
+            req.body[field] === undefined || req.body[field] === null
+        );
         if (missing.length > 0) {
             throw new Error(`Missing required fields: ${missing.join(', ')}`);
         }
