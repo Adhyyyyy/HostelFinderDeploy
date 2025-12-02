@@ -17,7 +17,13 @@ class BookingController extends BaseController {
      */
     async create(req, res, next) {
         try {
+            // Validate required fields
             this.validateBody(req, ['name', 'phone', 'roomID', 'hostelID', 'bedNumber']);
+
+            // Additional validation: ensure bedNumber is a non-empty string
+            if (!req.body.bedNumber || typeof req.body.bedNumber !== 'string' || req.body.bedNumber.trim().length === 0) {
+                return this.sendError(res, 400, 'bedNumber is required and must be a non-empty string');
+            }
 
             const result = await this.bookingService.createBooking(req.body);
             this.sendResponse(res, 201, result, 'Booking created successfully');
@@ -40,7 +46,8 @@ class BookingController extends BaseController {
             if (phone) filters.phone = phone;
 
             const results = await this.bookingService.getAllBookings(filters);
-            this.sendResponse(res, 200, { success: true, data: results });
+            // sendResponse already wraps in { success: true, data: ... }, so just pass results directly
+            this.sendResponse(res, 200, results);
         } catch (error) {
             this.handleError(error, next);
         }

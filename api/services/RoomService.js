@@ -1,6 +1,7 @@
 import BaseService from '../core/BaseService.js';
 import RoomRepository from '../repositories/RoomRepository.js';
 import BedService from './BedService.js';
+import BookingRepository from '../repositories/BookingRepository.js';
 import HostelService from './HostelService.js';
 
 /**
@@ -13,6 +14,7 @@ class RoomService extends BaseService {
         super(roomRepository);
         this.roomRepository = roomRepository;
         this.bedService = new BedService();
+        this.bookingRepository = new BookingRepository();
         this.hostelService = new HostelService();
     }
 
@@ -70,8 +72,34 @@ class RoomService extends BaseService {
             const room = await this.getById(roomId);
             const beds = await this.bedService.getBedsByRoomId(roomId);
 
+            // For each bed, check if there's any non-rejected booking (pending/approved)
+            // and mark the bed as reserved if so. This keeps the frontend in sync
+            // with booking state (beds with pending bookings should appear unavailable).
+            const bedsWithReservation = await Promise.all(
+                beds.map(async (bed) => {
+                    try {
+                        // Ensure bed is a plain object with bedNumber accessible
+                        const bedObj = bed && typeof bed === 'object' ? bed : {};
+                        const bedNumber = bedObj.bedNumber || bedObj._doc?.bedNumber;
+                        
+                        if (!bedNumber) {
+                            console.error('Bed missing bedNumber:', bedObj);
+                            return { ...bedObj, reserved: false };
+                        }
+                        
+                        const hasBooking = await this.bookingRepository.isBedBooked(roomId, bedNumber);
+                        return { ...bedObj, reserved: !!hasBooking };
+                    } catch (err) {
+                        // On error, default to not reserved to avoid blocking UI completely
+                        const bedObj = bed && typeof bed === 'object' ? bed : {};
+                        console.error('Error checking booking for bed', bedObj.bedNumber || bedObj._doc?.bedNumber, err);
+                        return { ...bedObj, reserved: false };
+                    }
+                })
+            );
+
             const roomResponse = { ...room };
-            roomResponse.beds = beds;
+            roomResponse.beds = bedsWithReservation;
 
             return roomResponse;
         } catch (error) {

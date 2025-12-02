@@ -86,7 +86,16 @@ class HostelController extends BaseController {
             if (name) searchCriteria.name = name;
             if (category) searchCriteria.category = category;
             if (genderType) searchCriteria.genderType = genderType;
-            if (messType !== undefined) searchCriteria.messType = messType === 'true';
+            if (messType !== undefined) {
+                // Accept boolean or string values for messType. If it's a string like
+                // 'true'/'false' (from query params), convert accordingly. If it's
+                // already a boolean (from validation), preserve it.
+                if (typeof messType === 'string') {
+                    searchCriteria.messType = messType.trim().toLowerCase() === 'true';
+                } else {
+                    searchCriteria.messType = Boolean(messType);
+                }
+            }
             if (pricing) searchCriteria.pricing = pricing;
             if (minVacancy) searchCriteria.minVacancy = parseInt(minVacancy);
             if (maxDistance) searchCriteria.maxDistance = parseFloat(maxDistance);
@@ -212,7 +221,13 @@ class HostelController extends BaseController {
             if (searchCriteria.limit) searchCriteria.limit = parseInt(searchCriteria.limit);
             if (searchCriteria.maxDistance) searchCriteria.maxDistance = parseFloat(searchCriteria.maxDistance);
             if (searchCriteria.minVacancy) searchCriteria.minVacancy = parseInt(searchCriteria.minVacancy);
-            if (searchCriteria.messType) searchCriteria.messType = searchCriteria.messType === 'true';
+            if (searchCriteria.messType !== undefined) {
+                if (typeof searchCriteria.messType === 'string') {
+                    searchCriteria.messType = searchCriteria.messType.trim().toLowerCase() === 'true';
+                } else {
+                    searchCriteria.messType = Boolean(searchCriteria.messType);
+                }
+            }
 
             const results = await this.hostelService.searchHostels(searchCriteria);
             this.sendResponse(res, 200, results);

@@ -12,12 +12,24 @@ class ValidationMiddleware {
     static validateBody(schema) {
         return (req, res, next) => {
             try {
-                // Make validation more lenient for backward compatibility
                 const validatedData = Validator.validateUserInput(req.body, schema);
                 req.body = validatedData;
                 next();
             } catch (error) {
-                // For backward compatibility, log validation errors but don't block requests
+                // For required fields, we should throw the error to prevent invalid data
+                // Only log warnings for non-critical validation issues
+                if (error.message && error.message.includes('required')) {
+                    // Required field validation errors should be thrown
+                    return res.status(400).json({
+                        success: false,
+                        message: error.message,
+                        timestamp: new Date().toISOString(),
+                        method: req.method,
+                        path: req.path,
+                        requestId: req.id || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+                    });
+                }
+                // For backward compatibility, log validation errors but don't block requests for non-critical issues
                 console.warn('Validation warning (non-blocking):', error.message);
                 next(); // Continue without validation error
             }

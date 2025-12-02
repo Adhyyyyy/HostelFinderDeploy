@@ -66,7 +66,8 @@ const RoomList = ({ hostelId, onBack }) => {
   });
 
   const getVacantBedCount = (beds) => {
-    return beds.filter(bed => !bed.isOccupied).length;
+    // Consider beds reserved by pending/approved bookings as unavailable too
+    return beds.filter(bed => !bed.isOccupied && !bed.reserved).length;
   };
 
   const handleBookNow = (room) => {
@@ -78,10 +79,31 @@ const RoomList = ({ hostelId, onBack }) => {
     e.preventDefault();
     try {
       // Find first available bed
-      const availableBed = selectedRoom.beds.find(bed => !bed.isOccupied);
+      const availableBed = selectedRoom.beds.find(bed => !bed.isOccupied && !bed.reserved);
       
       if (!availableBed) {
         alert("No beds available in this room!");
+        return;
+      }
+
+      // Extract bedNumber - handle both plain objects and Mongoose documents
+      let bedNumber = availableBed.bedNumber;
+      
+      // If bedNumber is not directly accessible, try to get it from _doc (Mongoose document)
+      if (!bedNumber && availableBed._doc) {
+        bedNumber = availableBed._doc.bedNumber;
+      }
+      
+      // If still not found, try to convert to object
+      if (!bedNumber && availableBed.toObject) {
+        const bedObj = availableBed.toObject();
+        bedNumber = bedObj.bedNumber;
+      }
+
+      // Validate that bedNumber exists
+      if (!bedNumber) {
+        alert("Error: Bed number is missing. Please try again.");
+        console.error("Available bed found but bedNumber is missing:", availableBed);
         return;
       }
 
@@ -90,7 +112,7 @@ const RoomList = ({ hostelId, onBack }) => {
         phone: bookingData.phone,
         roomID: selectedRoom._id,
         hostelID: hostelId,
-        bedNumber: availableBed.bedNumber
+        bedNumber: bedNumber
       };
 
       console.log("Sending booking data:", bookingPayload); // Debug log

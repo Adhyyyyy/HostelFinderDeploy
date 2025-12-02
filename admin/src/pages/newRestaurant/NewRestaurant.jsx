@@ -71,8 +71,12 @@ const NewRestaurant = () => {
         map: `https://www.google.com/maps?q=${info.location.latitude},${info.location.longitude}`
       };
 
-      await axios.post("/restaurants", newRestaurant);
-      navigate("/restaurants");
+      const response = await axios.post("/restaurants", newRestaurant);
+      
+      if (response.status === 200 || response.status === 201) {
+        alert("Restaurant created successfully!");
+        navigate("/restaurants");
+      }
     } catch (err) {
       console.error(err);
       alert(err.message || "Something went wrong!");

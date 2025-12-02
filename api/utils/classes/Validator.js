@@ -356,6 +356,20 @@ class Validator {
             try {
                 let value = data[field];
 
+                // Coerce boolean-like strings to actual booleans so query params like
+                // "true"/"false" (sent from the frontend) pass boolean validation.
+                // This is intentionally permissive and only affects fields declared
+                // with type 'boolean'. It accepts 'true'/'false' (case-insensitive)
+                // and '1'/'0'.
+                if (rule && rule.type === 'boolean' && typeof value === 'string') {
+                    const v = value.trim().toLowerCase();
+                    if (v === 'true' || v === '1') {
+                        value = true;
+                    } else if (v === 'false' || v === '0') {
+                        value = false;
+                    }
+                }
+
                 // Apply sanitization if specified
                 if (rule.sanitize) {
                     if (rule.type === 'email') {

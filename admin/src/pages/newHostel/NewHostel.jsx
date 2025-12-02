@@ -144,8 +144,8 @@ const NewHostel = () => {
       const response = await axios.post("/hostel", newHostel);
       console.log("Server response:", response);
 
-      if (response.status === 200) {
-        alert("Hostel added successfully!");
+      if (response.status === 200 || response.status === 201) {
+        alert("Hostel created successfully!");
         navigate("/hostel");
       }
     } catch (err) {

@@ -108,18 +108,38 @@ const Beds = () => {
         
         console.log("Bookings response:", response.data);
         
-        // Handle both wrapped and raw response formats
+        // Handle response format: { success: true, data: [...] }
         let bookingsData;
-        if (response.data.success && response.data.data) {
-          bookingsData = response.data.data;
-        } else {
+        if (response.data && response.data.success !== undefined) {
+          // Standard API response format
+          if (response.data.success && response.data.data) {
+            bookingsData = response.data.data;
+          } else if (Array.isArray(response.data.data)) {
+            bookingsData = response.data.data;
+          } else if (Array.isArray(response.data)) {
+            bookingsData = response.data;
+          } else {
+            bookingsData = [];
+          }
+        } else if (Array.isArray(response.data)) {
+          // Direct array response
           bookingsData = response.data;
+        } else {
+          bookingsData = [];
         }
         
         // Ensure bookingsData is an array
-        setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+        if (!Array.isArray(bookingsData)) {
+          console.error("Bookings data is not an array:", bookingsData);
+          bookingsData = [];
+        }
+        
+        console.log("Processed bookings:", bookingsData);
+        setBookings(bookingsData);
       } catch (error) {
         console.error("Error fetching bookings:", error);
+        console.error("Error response:", error.response?.data);
+        setBookings([]);
       } finally {
         setLoadingBookings(false);
       }

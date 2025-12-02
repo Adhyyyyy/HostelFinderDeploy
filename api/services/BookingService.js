@@ -327,6 +327,34 @@ class BookingService extends BaseService {
         const phoneRegex = /^[\+]?[1-9][\d]{9,14}$/;
         return phoneRegex.test(phone.replace(/\s/g, ''));
     }
+
+    /**
+     * Format booking response - convert Mongoose document to plain object
+     */
+    _formatResponse(booking) {
+        if (!booking) return null;
+        
+        // Convert Mongoose document to plain object if needed
+        const bookingObj = booking.toObject ? booking.toObject() : booking;
+        
+        // Ensure all fields are accessible at the top level
+        return {
+            ...bookingObj,
+            id: bookingObj._id || bookingObj.id,
+            _id: bookingObj._id || bookingObj.id,
+            name: bookingObj.name,
+            phone: bookingObj.phone,
+            roomID: bookingObj.roomID || bookingObj.roomId,
+            hostelID: bookingObj.hostelID || bookingObj.hostelId,
+            hostelName: bookingObj.hostelName,
+            roomNumber: bookingObj.roomNumber,
+            bedNumber: bookingObj.bedNumber,
+            status: bookingObj.status || 'pending',
+            bookingDate: bookingObj.bookingDate || bookingObj.createdAt,
+            createdAt: bookingObj.createdAt,
+            updatedAt: bookingObj.updatedAt
+        };
+    }
 }
 
 export default BookingService;

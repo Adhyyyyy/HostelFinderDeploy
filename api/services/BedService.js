@@ -320,6 +320,28 @@ class BedService extends BaseService {
         const phoneRegex = /^[\+]?[1-9][\d]{9,14}$/;
         return phoneRegex.test(phone.replace(/\s/g, ''));
     }
+
+    /**
+     * Format bed response - convert Mongoose document to plain object
+     */
+    _formatResponse(bed) {
+        if (!bed) return null;
+        
+        // Convert Mongoose document to plain object if needed
+        const bedObj = bed.toObject ? bed.toObject() : bed;
+        
+        // Ensure all fields are accessible at the top level
+        return {
+            ...bedObj,
+            id: bedObj._id || bedObj.id,
+            bedNumber: bedObj.bedNumber || bedObj._doc?.bedNumber,
+            isOccupied: bedObj.isOccupied || false,
+            occupantName: bedObj.occupantName || null,
+            occupantPhone: bedObj.occupantPhone || null,
+            roomID: bedObj.roomID || bedObj.roomId,
+            hostelID: bedObj.hostelID || bedObj.hostelId
+        };
+    }
 }
 
 export default BedService;
